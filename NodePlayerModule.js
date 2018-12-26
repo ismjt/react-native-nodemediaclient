@@ -17,14 +17,19 @@ class NodePlayerView extends Component {
   constructor(props) {
     super(props);
   }
-  _onChange(event) {
+
+  componentWillUnmount() {
+    this.stop();
+  }
+
+  _onChange = (event) => {
     if (!this.props.onStatus) {
       return;
     }
     this.props.onStatus(event.nativeEvent.code, event.nativeEvent.message);
   }
 
-  pause() {
+  pause = () => {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
       UIManager.RCTNodePlayer.Commands.pause,
@@ -32,7 +37,7 @@ class NodePlayerView extends Component {
     );
   }
 
-  start() {
+  start = () => {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
       UIManager.RCTNodePlayer.Commands.start,
@@ -40,7 +45,7 @@ class NodePlayerView extends Component {
     );
   }
 
-  stop() {
+  stop = () => {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
       UIManager.RCTNodePlayer.Commands.stop,
@@ -52,19 +57,23 @@ class NodePlayerView extends Component {
     return <RCTNodePlayer
       {...this.props}
       ref={RCT_VIDEO_REF}
-      onChange={this._onChange.bind(this)}
+      onChange={this._onChange}
     />;
   };
 }
 NodePlayerView.name = RCT_VIDEO_REF;
 NodePlayerView.propTypes = {
   inputUrl: PropTypes.string,
+  rtspTransport: PropTypes.oneOf(['http', 'udp', 'tcp', 'udp_multicast']),
   bufferTime: PropTypes.number,
   maxBufferTime: PropTypes.number,
   autoplay: PropTypes.bool,
   scaleMode: PropTypes.oneOf(['ScaleToFill', 'ScaleAspectFit', 'ScaleAspectFill']),
   renderType: PropTypes.oneOf(['SURFACEVIEW', 'TEXTUREVIEW']),
   onStatus: PropTypes.func,
+  start: PropTypes.func,
+  stop: PropTypes.func,
+  pause: PropTypes.func,
   ...View.propTypes // 包含默认的View的属性
 };
 

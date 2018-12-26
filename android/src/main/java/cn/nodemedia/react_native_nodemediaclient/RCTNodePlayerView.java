@@ -7,8 +7,6 @@
 
 package cn.nodemedia.react_native_nodemediaclient;
 
-import android.util.AttributeSet;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
@@ -34,7 +32,7 @@ public class RCTNodePlayerView extends NodePlayerView implements LifecycleEventL
             public void onEventCallback(NodePlayer nodePlayer, int i, String s) {
                 WritableMap event = Arguments.createMap();
                 event.putInt("code", i);
-                event.putString("message", s);
+                event.putString("message", "s");
                 ReactContext reactContext = (ReactContext) getContext();
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                         getId(),
@@ -46,7 +44,6 @@ public class RCTNodePlayerView extends NodePlayerView implements LifecycleEventL
     }
 
 
-
     public void setInputUrl(String inputUrl) {
         mNodePlayer.setInputUrl(inputUrl);
         if(isAutoPlay) {
@@ -56,6 +53,10 @@ public class RCTNodePlayerView extends NodePlayerView implements LifecycleEventL
 
     public void setBufferTime(int bufferTime) {
         mNodePlayer.setBufferTime(bufferTime);
+    }
+
+    public void setRtspTransport(String rtspTransport) {
+        mNodePlayer.setRtspTransport(rtspTransport);
     }
 
     public void setMaxBufferTime(int maxBufferTime) {
@@ -71,7 +72,6 @@ public class RCTNodePlayerView extends NodePlayerView implements LifecycleEventL
         NodePlayerView.RenderType type =  NodePlayerView.RenderType.valueOf(stype);
         setRenderType(type);
     }
-
 
     public int pause() {
         return mNodePlayer.pause();
@@ -109,4 +109,5 @@ public class RCTNodePlayerView extends NodePlayerView implements LifecycleEventL
         stop();
         release();
     }
+
 }

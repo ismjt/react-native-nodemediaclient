@@ -55,6 +55,11 @@ public class NodePlayerViewManager extends SimpleViewManager<RCTNodePlayerView> 
         view.setMaxBufferTime(bufferTime);
     }
 
+    @ReactProp(name = "rtspTransport")
+    public void setRtspTransport(RCTNodePlayerView view, String rtspTransport) {
+        view.setRtspTransport(rtspTransport);
+    }
+
     @ReactProp(name = "scaleMode")
     public void setScaleMode(RCTNodePlayerView view, String mode) {
         view.setScaleMode(mode);
