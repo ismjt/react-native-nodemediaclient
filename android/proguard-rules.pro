@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# react-native-nodemediaclient
+-keep class cn.nodemedia.react_native_nodemediaclient.**{ *; }
+-keep class cn.nodemedia.**{ *;}
