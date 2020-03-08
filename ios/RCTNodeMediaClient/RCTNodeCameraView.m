@@ -22,13 +22,24 @@
   self = [super init];
   if(self) {
     _np = [[NodePublisher alloc] initWithPremium:[RCTNodeMediaClient premium]];
+    [_np setNodePublisherDelegate:self];
     _autopreview = NO;
     _outputUrl = nil;
     _camera = nil;
     _audio = nil;
     _video = nil;
+    _onStatus = nil;
   }
   return self;
+}
+
+-(void) onEventCallback:(nonnull id)sender event:(int)event msg:(nonnull NSString*)msg {
+    if (!_onStatus) {
+        return;
+    }
+    
+    NSLog(@"Calling _onStatus with event %i and msg %@", event, msg);
+    _onStatus(@{ @"msg": msg, @"event": [NSNumber numberWithInteger:event] });
 }
 
 -(void)setOutputUrl:(NSString *)outputUrl {
@@ -80,6 +91,10 @@
 - (void)setSmoothSkinLevel:(NSInteger)smoothSkinLevel {
   _smoothSkinLevel = smoothSkinLevel;
   [_np setBeautyLevel:smoothSkinLevel];
+}
+
+- (void)setOnStatus:(RCTDirectEventBlock)onStatus {
+    _onStatus = onStatus;
 }
 
 - (void)setFlashEnable:(BOOL)flashEnable {
