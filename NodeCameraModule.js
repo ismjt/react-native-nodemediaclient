@@ -27,7 +27,7 @@ class NodeCameraView extends Component {
   switchCamera() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.switchCamera,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.switchCamera,
       null
     );
   }
@@ -35,7 +35,7 @@ class NodeCameraView extends Component {
   flashEnable(enable) {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.flashEnable,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.flashEnable,
       [enable]
     );
   }
@@ -43,7 +43,7 @@ class NodeCameraView extends Component {
   startPreview() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.startprev,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.startprev,
       null
     );
   }
@@ -51,7 +51,7 @@ class NodeCameraView extends Component {
   stopPreview() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.stopprev,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.stopprev,
       null
     );
   }
@@ -59,7 +59,7 @@ class NodeCameraView extends Component {
   start() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.start,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.start,
       null
     );
   }
@@ -67,7 +67,7 @@ class NodeCameraView extends Component {
   stop() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs[RCT_VIDEO_REF]),
-      UIManager.RCTNodeCamera.Commands.stop,
+      UIManager.getViewManagerConfig('RCTNodeCamera').Commands.stop,
       null
     );
   }

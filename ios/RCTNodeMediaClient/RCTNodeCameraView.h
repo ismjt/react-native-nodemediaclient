@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <NodeMediaClient/NodeMediaClient.h>
+#import <React/RCTView.h>
 
-@interface RCTNodeCameraView : UIView
+@interface RCTNodeCameraView : UIView <NodePublisherDelegate>
 @property (strong, nonatomic) NSString *outputUrl;
 @property (nonatomic) BOOL autopreview;
 @property (strong,nonatomic) NSDictionary *camera;
@@ -16,6 +18,7 @@
 @property (strong,nonatomic) NSDictionary *video;
 @property (nonatomic) BOOL denoise;
 @property (nonatomic) NSInteger smoothSkinLevel;
+@property (nonatomic) RCTDirectEventBlock onStatus;
 
 @property (nonatomic) BOOL flashEnable;
 

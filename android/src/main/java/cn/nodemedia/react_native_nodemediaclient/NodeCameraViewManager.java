@@ -7,21 +7,20 @@
 
 package cn.nodemedia.react_native_nodemediaclient;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import cn.nodemedia.react_native_nodemediaclient.RCTNodeCameraView;
-
-
-public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> {
+public class NodeCameraViewManager extends ViewGroupManager<RCTNodeCameraView> {
 
     private static final int COMMAND_STARTPREV_ID =0;
     private static final String COMMAND_STARTPREV_NAME = "startprev";
@@ -41,6 +40,22 @@ public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> 
     }
 
     @Override
+    public Map getExportedCustomBubblingEventTypeConstants() {
+        return MapBuilder.builder()
+                .put(
+                        "topChange",
+                        MapBuilder.of(
+                                "phasedRegistrationNames",
+                                MapBuilder.of("bubbled", "onStatus")))
+                .build();
+    }
+
+    @Override
+    public boolean needsCustomLayoutForChildren() {
+        return true;
+    }
+
+    @Override
     protected RCTNodeCameraView createViewInstance(ThemedReactContext reactContext) {
         RCTNodeCameraView view = new RCTNodeCameraView(reactContext);
         return view;
@@ -53,8 +68,10 @@ public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> 
 
     @ReactProp(name="autopreview")
     public void setAutoPreview(RCTNodeCameraView view, @Nullable Boolean autoPreview) {
-        if(autoPreview) {
+        if(autoPreview == true) {
             view.audioPreview();
+        } else {
+            view.stopPrev();
         }
     }
 

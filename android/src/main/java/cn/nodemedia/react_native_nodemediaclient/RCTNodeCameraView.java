@@ -7,8 +7,11 @@
 
 package cn.nodemedia.react_native_nodemediaclient;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.Choreographer;
+import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -23,7 +26,7 @@ import cn.nodemedia.NodePublisherDelegate;
 
 public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventListener {
     private NodePublisher mNodePublisher;
-    private Boolean isAutoPreview = false;
+    private Boolean isAutoPreview = true;
 
     private int cameraId = -1;
     private boolean cameraFrontMirror = true;
@@ -44,6 +47,7 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
 
     public RCTNodeCameraView(@NonNull ThemedReactContext context) {
         super(context);
+        setupLayoutHack();
         context.addLifecycleEventListener(this);
 
         mNodePublisher = new NodePublisher(context, RCTNodeMediaClient.getPremium());
@@ -52,7 +56,7 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
             public void onEventCallback(NodePublisher nodePublisher, int i, String s) {
                 WritableMap event = Arguments.createMap();
                 event.putInt("code", i);
-                event.putString("message", "s");
+                event.putString("msg", s);
                 ReactContext reactContext = (ReactContext) getContext();
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                         getId(),
@@ -70,9 +74,11 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
 
 
     public void setCamera(int cameraId, boolean cameraFrontMirror) {
+        this.cameraId = cameraId;
+        this.cameraFrontMirror = cameraFrontMirror;
         mNodePublisher.setCameraPreview(this, cameraId, cameraFrontMirror);
         if(isAutoPreview) {
-            startPrev();
+            this.startPrev();
         }
     }
 
@@ -93,10 +99,12 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     }
 
     public int startPrev() {
-        return mNodePublisher.startPreview();
+        int result = mNodePublisher.startPreview();
+        return result;
     }
 
     public int stopPrev() {
+        isAutoPreview = false;
         return mNodePublisher.stopPreview();
     }
 
@@ -115,14 +123,13 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     public void audioPreview() {
         isAutoPreview = true;
         if(cameraId >=0) {
-            startPrev();
+            this.startPrev();
         }
 
     }
 
     @Override
     public void onHostResume() {
-
     }
 
     @Override
@@ -134,5 +141,25 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     public void onHostDestroy() {
         mNodePublisher.stopPreview();
         mNodePublisher.stop();
+    }
+
+    void setupLayoutHack() {
+        Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
+            @Override
+            public void doFrame(long frameTimeNanos) {
+                manuallyLayoutChildren();
+                getViewTreeObserver().dispatchOnGlobalLayout();
+                Choreographer.getInstance().postFrameCallback(this);
+            }
+        });
+    }
+
+    void manuallyLayoutChildren() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+            child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+        }
     }
 }
